@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+{% block content %}
+
+<form action="{{ url_for('edit_game') }}" method="post">
+    <fieldset>
+        <input type="hidden" name="game_id" value="{{ game_id }}">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" class="form-control" value="{{ name }}">
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="categoria">Categoria</label>
+            <input type="text" id="categoria" name="categoria" class="form-control" value="{{ category }}">
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="console">Console</label>
+            <input type="text" id="console" name="console" class="form-control" value="{{ platform }}">
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary btn-salvar">Salvar</button>
+    </fieldset>
+</form>
+
+{% endblock %}
