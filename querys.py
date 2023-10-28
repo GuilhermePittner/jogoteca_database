@@ -48,10 +48,11 @@ def insert_games(name, category, platform):
       connection = config.get_db_connection()
       with connection:
           with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO xuot1_studies.tb_games (name, category, platform) values (%s, %s, %s)", (name, category, platform,))
+            cursor.execute("INSERT INTO xuot1_studies.tb_games (name, category, platform) values (%s, %s, %s) returning id", (name, category, platform,))
+            id = cursor.fetchone()[0]
            
       connection.close()
-      return True
+      return id
 
     except psycopg2.DatabaseError as error:
         raise ValueError('Error on method ' + inspect.stack()[0][3])

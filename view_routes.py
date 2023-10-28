@@ -1,6 +1,6 @@
-from flask import render_template, request, redirect, session, flash, url_for
+from flask import render_template, request, redirect, session, flash, url_for, send_from_directory
+import querys, crud_routes
 from main import app
-import querys
 
 #####################
 ####### ROTAS #######
@@ -59,4 +59,11 @@ def edit(id):
         return render_template('login.html', title='Enter with your credentials')
     
     game_info = querys.games_info(id)
-    return render_template('edit.html', title='Edit game', name=game_info[0]['name'], category=game_info[0]['category'], platform=game_info[0]['platform'], game_id=id)    
+    capa_jogo = crud_routes.get_image(id)
+
+    return render_template('edit.html', title='Edit game', name=game_info[0]['name'], category=game_info[0]['category'], platform=game_info[0]['platform'], game_id=id, capa_jogo=capa_jogo)
+
+
+@app.route('/uploads/<nome_arquivo>')
+def imagem(nome_arquivo):
+    return send_from_directory('uploads', nome_arquivo)
