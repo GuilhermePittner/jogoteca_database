@@ -1,6 +1,19 @@
-from flask import request, redirect, flash
+from wtforms import StringField, validators, SubmitField
+from flask import request, redirect, flash, url_for
+from flask_wtf import FlaskForm
+import querys, os, time
 from main import app
-import querys, os
+
+
+#===================#
+#      WTFORMS      #
+#===================#
+class FormJogo(FlaskForm):
+    name = StringField('Nome do Jogo', [validators.DataRequired(), validators.Length(min=1, max=30)])
+    category = StringField('Categoria do Jogo', [validators.DataRequired(), validators.Length(min=1, max=30)])
+    console = StringField('Console', [validators.DataRequired(), validators.Length(min=1, max=30)])
+
+    submit = SubmitField('Salvar')
 
 
 #===================#
@@ -9,9 +22,16 @@ import querys, os
 #@app.route('/new_game', methods=['POST',])
 @app.post('/new_game')
 def new_game():
-    nome = request.form['nome']
-    categoria = request.form['categoria']
-    console = request.form['console']
+    form = FormJogo(request.form)
+
+    if not form.validate_on_submit():
+        return redirect(url_for('insert'))
+    
+    
+    nome = form.name.data
+    categoria = form.category.data
+    console = form.console.data
+    
 
     game_check = querys.check_games(nome)
     if game_check:
@@ -22,8 +42,9 @@ def new_game():
 
         print(f'segue id {id}')
 
+        timestamp = time.time()
         file = request.files['file']
-        file.save(f'uploads/capa_{id}.jpg')
+        file.save(f'uploads/capa_{id}-{timestamp}.jpg')
         
     #novoJogo = classes.meusJogos(nome, categoria, console)
     #classes.games.append(novoJogo)
@@ -38,8 +59,11 @@ def edit_game():
     console = request.form['console']
     id = request.form['game_id']
 
+    delete_image(id)
+
+    timestamp = time.time()
     file = request.files['file']
-    file.save(f'uploads/capa_{id}.jpg')
+    file.save(f'uploads/capa_{id}-{timestamp}.jpg')
     
     querys.update_games(nome, categoria, console, id)
 
@@ -49,6 +73,7 @@ def edit_game():
 @app.route('/delete/<id>')
 def delete(id):
     querys.delete_games(id)
+    delete_image(id)
     return redirect("/list")
 
 
@@ -58,7 +83,13 @@ def delete(id):
 #===================#
 def get_image(id):
     for file_name in os.listdir('uploads/'):
-        if file_name == f'capa_{id}.jpg':
+        if f'capa_{id}' in file_name:
             return file_name
         
     return 'capa_random.jpg'
+
+
+def delete_image(id):
+    filename = get_image(id)
+    if filename != 'capa_random.jpg':
+        os.remove(f'uploads/{filename}')

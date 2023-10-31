@@ -15,21 +15,24 @@
             </figure>
         </div>
         <div class="form-group">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" class="form-control">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
         </div>
         <br>
         <div class="form-group">
-            <label for="categoria">Categoria</label>
-            <input type="text" id="categoria" name="categoria" class="form-control">
+            {{ form.category.label(class="form-label") }}
+            {{ form.category(class="form-control") }}
         </div>
         <br>
         <div class="form-group">
-            <label for="console">Console</label>
-            <input type="text" id="console" name="console" class="form-control">
+            {{ form.console.label(class="form-label") }}
+            {{ form.console(class="form-control") }}
         </div>
         <br>
-        <button type="submit" class="btn btn-primary btn-salvar">Salvar</button>
+        <div>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+        <a class="btn btn-danger" href="{{ url_for('listar') }}">Cancel</a>
     </fieldset>
 </form>
 

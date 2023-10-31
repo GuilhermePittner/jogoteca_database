@@ -24,7 +24,8 @@ def insert():
     if 'current_user' not in session or session['current_user'] == None:
         return render_template('login.html', title='Enter with your credentials')
     
-    return render_template('insert.html', title='Insert a new game')
+    form = crud_routes.FormJogo()
+    return render_template('insert.html', title='Insert a new game', form=form)
 
 
 @app.post('/auth')
@@ -37,7 +38,7 @@ def authenticate():
 
         if users[0]['password'] == request.form['user_password']:
             session['current_user'] = users[0]['nickname']
-            return render_template('insert.html', title='Insert a new game')
+            return redirect(url_for('insert'))
             
             #return render_template(url_for('listar'))  # not working idkw
         else:
